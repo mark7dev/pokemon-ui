@@ -1,11 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import api from '@/config/axios';
-
-export interface Pokemon {
-  name: string;
-  types: string[];
-  image: string;
-}
+import type { Pokemon } from '@/types/pokemon';
 
 export const usePokemon = (selectedTypes: string[] = []) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);

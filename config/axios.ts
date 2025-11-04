@@ -2,37 +2,54 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
-  timeout: 10000, // 10 segundos timeout
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
-// Interceptor para logging de requests
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    }
     return config;
   },
   (error) => {
-    console.error('API Request Error:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('API Request Error:', error);
+    }
     return Promise.reject(error);
   }
 );
 
-// Interceptor para manejo de responses
+// Response interceptor
 api.interceptors.response.use(
   (response) => {
-    console.log(`API Response: ${response.status} ${response.config.url}`);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`API Response: ${response.status} ${response.config.url}`);
+    }
     return response;
   },
   (error) => {
+    // Always log errors, but with better formatting
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
     if (error.code === 'ECONNREFUSED') {
-      console.error('Connection refused - is the backend server running?');
+      if (isDevelopment) {
+        console.error('Connection refused - is the backend server running?');
+      }
     } else if (error.code === 'ERR_NETWORK') {
-      console.error('Network error - check your internet connection and CORS settings');
+      if (isDevelopment) {
+        console.error('Network error - check your internet connection and CORS settings');
+      }
     } else {
-      console.error('API Error:', error.message);
+      if (isDevelopment) {
+        console.error('API Error:', error.message);
+      }
     }
     return Promise.reject(error);
   }

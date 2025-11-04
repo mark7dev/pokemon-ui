@@ -11,48 +11,28 @@ import {
   OutlinedInput,
   SelectChangeEvent 
 } from '@mui/material';
+import { POKEMON_TYPES } from '@/constants/pokemon';
+import { getTypeColor } from '@/utils/typeColors';
 
 interface TypeFilterProps {
   selectedTypes: string[];
   onTypesChange: (types: string[]) => void;
 }
 
-const POKEMON_TYPES = [
-  'fire', 'water', 'grass', 'electric', 'psychic', 'ice', 
-  'dragon', 'dark', 'fairy', 'normal', 'fighting', 'poison', 
-  'ground', 'flying', 'bug', 'rock', 'ghost', 'steel'
-];
-
-// Function to get colors based on Pokemon type
-const getTypeColor = (type: string): string => {
-  const typeColors: { [key: string]: string } = {
-    fire: '#FF6B6B',
-    water: '#4ECDC4',
-    grass: '#45B7D1',
-    electric: '#FFA07A',
-    psychic: '#DA70D6',
-    ice: '#87CEEB',
-    dragon: '#6A5ACD',
-    dark: '#2F4F4F',
-    fairy: '#FFB6C1',
-    normal: '#D3D3D3',
-    fighting: '#CD853F',
-    poison: '#9370DB',
-    ground: '#F4A460',
-    flying: '#87CEFA',
-    bug: '#9ACD32',
-    rock: '#A0522D',
-    ghost: '#6B46C1',
-    steel: '#708090',
-  };
-  
-  return typeColors[type.toLowerCase()] || '#78716C';
-};
-
 export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) => {
   const handleChange = (event: SelectChangeEvent<typeof selectedTypes>) => {
     const value = event.target.value;
     onTypesChange(typeof value === 'string' ? value.split(',') : value);
+  };
+
+  const handleDelete = (typeToDelete: string) => (event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    onTypesChange(selectedTypes.filter(type => type !== typeToDelete));
+  };
+
+  const handleChipClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
   };
 
   return (
@@ -65,12 +45,17 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
         onChange={handleChange}
         input={<OutlinedInput label="Filter by Type" />}
         renderValue={(selected) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          <Box 
+            sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
+            onClick={handleChipClick}
+          >
             {selected.map((value) => (
               <Chip
                 key={value}
                 label={value}
                 size="small"
+                onDelete={handleDelete(value)}
+                onClick={handleChipClick}
                 sx={{
                   textTransform: 'capitalize',
                   backgroundColor: getTypeColor(value),
@@ -78,8 +63,17 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
                   fontWeight: 600,
                   fontSize: '0.7rem',
                   height: 20,
+                  cursor: 'default',
                   '& .MuiChip-label': {
                     px: 1
+                  },
+                  '& .MuiChip-deleteIcon': {
+                    color: 'white',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      color: 'rgba(255, 255, 255, 0.8)'
+                    }
                   }
                 }}
               />

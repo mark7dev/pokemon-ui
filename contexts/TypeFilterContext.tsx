@@ -1,10 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { usePokemon } from '@/hooks/usePokemon';
 
 interface TypeFilterContextType {
   selectedTypes: string[];
   setSelectedTypes: (types: string[]) => void;
+  pokemonCount: number;
+  isLoading: boolean;
 }
 
 const TypeFilterContext = createContext<TypeFilterContextType | undefined>(undefined);
@@ -15,9 +18,20 @@ interface TypeFilterProviderProps {
 
 export const TypeFilterProvider = ({ children }: TypeFilterProviderProps) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const { pokemon, loading } = usePokemon(selectedTypes);
+
+  const value = useMemo(
+    () => ({
+      selectedTypes,
+      setSelectedTypes,
+      pokemonCount: loading ? 0 : pokemon.length,
+      isLoading: loading,
+    }),
+    [selectedTypes, pokemon, loading]
+  );
 
   return (
-    <TypeFilterContext.Provider value={{ selectedTypes, setSelectedTypes }}>
+    <TypeFilterContext.Provider value={value}>
       {children}
     </TypeFilterContext.Provider>
   );
