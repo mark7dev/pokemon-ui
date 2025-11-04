@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    console.log('Proxy: Making request to backend...');
     
     const backendUrl = 'http://localhost:4000';
     const url = `${backendUrl}/api/pokemons`;
-    
-    console.log(`Proxy: Fetching from ${url}`);
     
     const response = await fetch(url, {
       method: 'GET',
@@ -16,8 +13,6 @@ export async function GET() {
       },
     });
 
-    console.log(`Proxy: Backend responded with status ${response.status}`);
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Proxy: Backend error: ${response.status} - ${errorText}`);
@@ -25,7 +20,6 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log(`Proxy: Successfully got ${data.length} pokemon`);
     
     return NextResponse.json(data, {
       status: 200,

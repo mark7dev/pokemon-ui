@@ -9,16 +9,12 @@ export async function GET(
     const backendUrl = 'http://localhost:4000';
     const url = `${backendUrl}/api/pokemons/${pokemonName}`;
     
-    console.log(`Proxy: Fetching pokemon from ${url}`);
-    
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     });
-
-    console.log(`Proxy: Backend responded with status ${response.status}`);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -27,7 +23,6 @@ export async function GET(
     }
 
     const data = await response.json();
-    console.log(`Proxy: Successfully got pokemon ${pokemonName}`);
     
     return NextResponse.json(data, {
       status: 200,

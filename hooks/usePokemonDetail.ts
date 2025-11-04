@@ -19,7 +19,6 @@ export const usePokemonDetail = (name: string) => {
         setError(null);
         
         const response = await api.get(`/pokemons/${name}`);
-        console.log('Pokemon detail response:', response.data);
         setPokemon(response.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch Pokemon');
