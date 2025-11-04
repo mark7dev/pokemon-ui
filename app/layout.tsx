@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { ThemeProvider } from "next-themes";
 import MuiThemeProvider from "@/components/MuiThemeProvider";
 import { TypeFilterProvider } from "@/contexts/TypeFilterContext";
+import { QueryProvider } from "@/components/QueryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,12 +36,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableColorScheme={true}
           storageKey="pokemon-theme"
         >
-          <MuiThemeProvider>
-            <TypeFilterProvider>
-              <Header />
-              {children}
-            </TypeFilterProvider>
-          </MuiThemeProvider>
+          <QueryProvider>
+            <MuiThemeProvider>
+              <TypeFilterProvider>
+                <Header />
+                {children}
+              </TypeFilterProvider>
+            </MuiThemeProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
