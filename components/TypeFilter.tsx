@@ -29,15 +29,10 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
     onTypesChange(typeof value === 'string' ? value.split(',') : value);
   };
 
-  const handleDelete = (typeToDelete: string) => (event: React.MouseEvent) => {
+  const handleChipClick = (typeToDelete: string) => (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
     onTypesChange(selectedTypes.filter(type => type !== typeToDelete));
-  };
-
-  const handleChipClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    event.preventDefault();
   };
 
   const handleSelectClick = (event: React.MouseEvent) => {
@@ -100,16 +95,15 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
               width: '100%',
               pr: 4
             }}
-            onClick={handleChipClick}
-            onMouseDown={(e) => e.preventDefault()}
+            onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
           >
             {selected.map((value) => (
               <Chip
                 key={value}
                 label={value}
                 size="small"
-                onDelete={handleDelete(value)}
-                onClick={handleChipClick}
+                onDelete={handleChipClick(value)}
+                onClick={handleChipClick(value)}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -121,17 +115,20 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
                   fontWeight: 600,
                   fontSize: '0.7rem',
                   height: 20,
-                  cursor: 'default',
+                  cursor: 'pointer',
                   pointerEvents: 'auto',
+                  transition: 'opacity 0.2s',
+                  '&:hover': {
+                    opacity: 0.8
+                  },
                   '& .MuiChip-label': {
                     px: 1,
-                    pointerEvents: 'none'
+                    cursor: 'pointer'
                   },
                   '& .MuiChip-deleteIcon': {
                     color: 'white',
                     fontSize: '0.875rem',
                     cursor: 'pointer',
-                    pointerEvents: 'auto',
                     '&:hover': {
                       color: 'rgba(255, 255, 255, 0.8)'
                     }
