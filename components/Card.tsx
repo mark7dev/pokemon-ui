@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -14,9 +15,10 @@ interface PokemonCardProps {
 }
 
 export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
+  const router = useRouter();
 
   const handleClick = () => {
-    console.log('Card clicked:', pokemon.name);
+    router.push(`/pokemon/${pokemon.name}`);
   }
 
   return (
