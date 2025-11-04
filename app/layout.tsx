@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { ThemeProvider } from "next-themes";
+import MuiThemeProvider from "@/components/MuiThemeProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,8 +38,10 @@ export default function RootLayout({
           enableColorScheme={true}
           storageKey="pokemon-theme"
         >
-          <Header />
-          {children}
+          <MuiThemeProvider>
+            <Header />
+            {children}
+          </MuiThemeProvider>
         </ThemeProvider>
       </body>
     </html>
