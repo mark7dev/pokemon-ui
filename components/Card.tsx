@@ -23,7 +23,7 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
       sx={{ 
         width: '100%',
         height: '100%',
-        minHeight: 360,
+        minHeight: 280,
         maxWidth: 'none',
         display: 'flex',
         flexDirection: 'column',
@@ -80,40 +80,41 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
             flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
             p: 2,
-            '&:last-child': { pb: 2 }
+            pt: 1,
+            pb: 1.5,
+            '&:last-child': { pb: 1.5 }
           }}
         >
-          {/* Pokemon name */}
-          <Typography 
-            gutterBottom 
-            variant="h6" 
-            component="div" 
-            sx={{ 
-              textTransform: 'capitalize',
-              fontWeight: 600,
-              fontSize: '1.1rem',
-              lineHeight: 1.3,
-              mb: 1.5,
-              minHeight: '1.5em',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            {pokemon.name}
-          </Typography>
+          {/* Pokemon name and types together */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <Typography 
+              variant="h6" 
+              component="div" 
+              sx={{ 
+                textTransform: 'capitalize',
+                fontWeight: 600,
+                fontSize: '1.1rem',
+                lineHeight: 1,
+                mt: 1,
+                mb: 1,
+                minHeight: 'auto'
+              }}
+            >
+              {pokemon.name}
+            </Typography>
 
-          {/* Types container */}
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 0.8,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-end'
-            }}
-          >
+            {/* Types container */}
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 0.8,
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                mt: 0.8
+              }}
+            >
             {pokemon.types.map((type, index) => (
               <Chip
                 key={index}
@@ -138,6 +139,7 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
                 }}
               />
             ))}
+          </Box>
           </Box>
         </CardContent>
       </CardActionArea>
