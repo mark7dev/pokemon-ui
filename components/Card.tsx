@@ -60,7 +60,7 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
         >
           <CardMedia
             component="img"
-            image={pokemon.image}
+            image={pokemon.image || '/no-image.svg'}
             alt={pokemon.name}
             sx={{ 
               maxWidth: '90%',
