@@ -3,11 +3,15 @@
 import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { usePokemon } from '@/hooks/usePokemon';
 
+type SortOrder = 'asc' | 'desc' | null;
+
 interface TypeFilterContextType {
   selectedTypes: string[];
   setSelectedTypes: (types: string[]) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
   pokemonCount: number;
   isLoading: boolean;
 }
@@ -21,7 +25,8 @@ interface TypeFilterProviderProps {
 export const TypeFilterProvider = ({ children }: TypeFilterProviderProps) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const { pokemon, loading } = usePokemon(selectedTypes, searchTerm);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
+  const { pokemon, loading } = usePokemon(selectedTypes, searchTerm, sortOrder);
 
   const value = useMemo(
     () => ({
@@ -29,10 +34,12 @@ export const TypeFilterProvider = ({ children }: TypeFilterProviderProps) => {
       setSelectedTypes,
       searchTerm,
       setSearchTerm,
+      sortOrder,
+      setSortOrder,
       pokemonCount: loading ? 0 : pokemon.length,
       isLoading: loading,
     }),
-    [selectedTypes, searchTerm, pokemon, loading]
+    [selectedTypes, searchTerm, sortOrder, pokemon, loading]
   );
 
   return (

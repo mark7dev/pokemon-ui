@@ -8,10 +8,11 @@ import { SimpleLoading } from './SimpleLoading';
 interface GridProps {
     selectedTypes: string[];
     searchTerm: string;
+    sortOrder: 'asc' | 'desc' | null;
 }
 
-export const Grid = ({ selectedTypes, searchTerm }: GridProps) => {
-    const { pokemon, loading, error } = usePokemon(selectedTypes, searchTerm);
+export const Grid = ({ selectedTypes, searchTerm, sortOrder }: GridProps) => {
+    const { pokemon, loading, error } = usePokemon(selectedTypes, searchTerm, sortOrder);
 
     if (error) {
         return (

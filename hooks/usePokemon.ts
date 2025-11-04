@@ -2,7 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import api from '@/config/axios';
 import type { Pokemon } from '@/types/pokemon';
 
-export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = '') => {
+type SortOrder = 'asc' | 'desc' | null;
+
+export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = '', sortOrder: SortOrder = null) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = ''
     fetchPokemon();
   }, []);
 
-  // Filter pokemon based on selected types and search term
+  // Filter and sort pokemon based on selected types, search term, and sort order
   const filteredPokemon = useMemo(() => {
     let filtered = pokemon;
 
@@ -49,8 +51,21 @@ export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = ''
       );
     }
 
+    // Sort by name
+    if (sortOrder) {
+      filtered = [...filtered].sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        if (sortOrder === 'asc') {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+    }
+
     return filtered;
-  }, [pokemon, selectedTypes, searchTerm]);
+  }, [pokemon, selectedTypes, searchTerm, sortOrder]);
 
   const refetch = async () => {
     try {

@@ -6,14 +6,15 @@ import { ThemeToggle } from "./ThemeToggle";
 import { TypeFilter } from "./TypeFilter";
 import { SearchBar } from "./SearchBar";
 import { useTypeFilter } from "@/contexts/TypeFilterContext";
-import { Button, Typography, Box, IconButton } from "@mui/material";
+import { Button, Typography, Box, IconButton, Tooltip } from "@mui/material";
 import { IoArrowBack } from "react-icons/io5";
+import { MdSort } from "react-icons/md";
 
 export const Header = () => {
     const pathname = usePathname();
     const router = useRouter();
     const isHomePage = pathname === '/';
-    const { selectedTypes, setSelectedTypes, pokemonCount, isLoading } = useTypeFilter();
+    const { selectedTypes, setSelectedTypes, pokemonCount, isLoading, sortOrder, setSortOrder } = useTypeFilter();
 
     const handleReset = () => {
         setSelectedTypes([]);
@@ -25,6 +26,16 @@ export const Header = () => {
 
     const handleBackClick = () => {
         router.push('/');
+    };
+
+    const handleSortClick = () => {
+        if (sortOrder === null) {
+            setSortOrder('asc');
+        } else if (sortOrder === 'asc') {
+            setSortOrder('desc');
+        } else {
+            setSortOrder(null);
+        }
     };
 
     return (
@@ -97,8 +108,28 @@ export const Header = () => {
 
                 {/* Mobile: Middle row - Search Bar */}
                 {isHomePage && (
-                    <Box sx={{ width: '100%' }}>
-                        <SearchBar />
+                    <Box sx={{ width: '100%', display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Box sx={{ flex: 1 }}>
+                            <SearchBar />
+                        </Box>
+                        <Tooltip title={sortOrder === 'asc' ? 'Sort A-Z' : sortOrder === 'desc' ? 'Sort Z-A' : 'Sort by Name'}>
+                            <IconButton
+                                onClick={handleSortClick}
+                                size="small"
+                                sx={{
+                                    color: sortOrder ? 'primary.main' : 'text.secondary',
+                                    border: 1,
+                                    borderColor: sortOrder ? 'primary.main' : 'divider',
+                                    '&:hover': {
+                                        backgroundColor: 'action.hover',
+                                        borderColor: 'primary.main'
+                                    }
+                                }}
+                                aria-label="Sort by name"
+                            >
+                                <MdSort size={20} />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 )}
 
@@ -149,8 +180,8 @@ export const Header = () => {
                 {isHomePage ? (
                     <>
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: 2 }}>
-                            <TypeFilter 
-                                selectedTypes={selectedTypes} 
+                <TypeFilter 
+                    selectedTypes={selectedTypes} 
                                 onTypesChange={setSelectedTypes} 
                             />
                             <Button
@@ -202,6 +233,26 @@ export const Header = () => {
 
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>
                             <SearchBar />
+                            {isHomePage && (
+                                <Tooltip title={sortOrder === 'asc' ? 'Sort A-Z' : sortOrder === 'desc' ? 'Sort Z-A' : 'Sort by Name'}>
+                                    <IconButton
+                                        onClick={handleSortClick}
+                                        size="small"
+                                        sx={{
+                                            color: sortOrder ? 'primary.main' : 'text.secondary',
+                                            border: 1,
+                                            borderColor: sortOrder ? 'primary.main' : 'divider',
+                                            '&:hover': {
+                                                backgroundColor: 'action.hover',
+                                                borderColor: 'primary.main'
+                                            }
+                                        }}
+                                        aria-label="Sort by name"
+                                    >
+                                        <MdSort size={20} />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                             <ThemeToggle />
                         </Box>
                     </>
@@ -234,18 +285,18 @@ export const Header = () => {
                             }}
                             onClick={handleLogoClick}
                         >
-                            <Image
-                                src="/logo.png"
-                                alt="Pokemon Logo"
-                                width={320}
-                                height={240}
-                                priority
-                                className="h-auto"
+                <Image
+                    src="/logo.png"
+                    alt="Pokemon Logo"
+                    width={320}
+                    height={240}
+                    priority
+                    className="h-auto"
                                 style={{ maxWidth: '320px', height: 'auto' }}
-                            />
+                />
                         </Box>
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <ThemeToggle />
+                <ThemeToggle />
                         </Box>
                     </>
                 )}
