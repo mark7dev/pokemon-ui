@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Header } from "@/components/Header";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +29,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          enableSystem={true}
+          defaultTheme="system"
+          disableTransitionOnChange={false}
+          enableColorScheme={true}
+          storageKey="pokemon-theme"
+        >
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

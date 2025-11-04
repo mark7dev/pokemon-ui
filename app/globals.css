@@ -3,19 +3,79 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --inactive-gray: #A0A0AA;
+  /* Custom Brand Colors */
+  --brand-blue: #007BFF;
+  --brand-blue-hover: #0056B3;
+  --brand-blue-light: #CCE5FF;
+  --brand-blue-dark: #004085;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.text-inactive-gray {
+  color: var(--inactive-gray);
+  transition: color 0.3s cubic-bezier(.4,0,.2,1);
 }
 
+.text-inactive-gray:hover {
+  color: var(--foreground);
+}
+
+/* Smooth transition for SVG stroke according to theme */
+.theme-stroke {
+  stroke: var(--foreground);
+  transition: stroke 0.3s ease;
+}
+
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+
+/* Dark theme variables */
+:root.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+  
+  /* Brand colors remain consistent in dark mode */
+  --brand-blue: #007BFF;
+  --brand-blue-hover: #4DA3FF;
+  --brand-blue-light: #003366;
+  --brand-blue-dark: #0099FF;
+}
+
+/* Light theme variables (explicit) */
+:root.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  
+  /* Brand colors for light mode */
+  --brand-blue: #007BFF;
+  --brand-blue-hover: #0056B3;
+  --brand-blue-light: #CCE5FF;
+  --brand-blue-dark: #004085;
+}
+
+/* System preference fallback - this ensures system changes are detected */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --color-background: #0a0a0a;
+    --color-foreground: #ededed;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --background: #ffffff;
+    --foreground: #171717;
+    --color-background: #ffffff;
+    --color-foreground: #171717;
   }
 }
 
@@ -23,4 +83,64 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Force re-evaluation when system theme changes */
+html {
+  color-scheme: light dark;
+}
+
+/* Custom utility classes for theme variables */
+.theme-bg {
+  background-color: var(--background);
+}
+
+.theme-text {
+  color: var(--foreground);
+  transition: color 0.1s ease;
+}
+
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Brand color utility classes */
+.brand-blue {
+  color: var(--brand-blue);
+}
+
+.bg-brand-blue {
+  background-color: var(--brand-blue);
+}
+
+.bg-brand-blue:hover {
+  background-color: var(--brand-blue-hover);
+}
+
+.border-brand-blue {
+  border-color: var(--brand-blue);
+}
+
+.ring-brand-blue {
+  --tw-ring-color: var(--brand-blue);
+}
+
+/* Text shine animation for brand text */
+@keyframes textShineAnimation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
