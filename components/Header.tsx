@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
 import { TypeFilter } from "./TypeFilter";
+import { SearchBar } from "./SearchBar";
 import { useTypeFilter } from "@/contexts/TypeFilterContext";
 import { Button, Typography } from "@mui/material";
 
@@ -52,7 +53,8 @@ export const Header = () => {
                     className="h-auto"
                 />
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end items-center gap-2">
+                <SearchBar />
                 <ThemeToggle />
             </div>
         </header>

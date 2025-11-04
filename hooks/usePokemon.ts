@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import api from '@/config/axios';
 import type { Pokemon } from '@/types/pokemon';
 
-export const usePokemon = (selectedTypes: string[] = []) => {
+export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = '') => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,20 +26,31 @@ export const usePokemon = (selectedTypes: string[] = []) => {
     fetchPokemon();
   }, []);
 
-  // Filter pokemon based on selected types
+  // Filter pokemon based on selected types and search term
   const filteredPokemon = useMemo(() => {
-    if (selectedTypes.length === 0) {
-      return pokemon;
+    let filtered = pokemon;
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(search)
+      );
     }
-    
-    return pokemon.filter(p => 
-      selectedTypes.some(selectedType => 
-        p.types.some(pokemonType => 
-          pokemonType.toLowerCase() === selectedType.toLowerCase()
+
+    // Filter by selected types
+    if (selectedTypes.length > 0) {
+      filtered = filtered.filter(p => 
+        selectedTypes.some(selectedType => 
+          p.types.some(pokemonType => 
+            pokemonType.toLowerCase() === selectedType.toLowerCase()
+          )
         )
-      )
-    );
-  }, [pokemon, selectedTypes]);
+      );
+    }
+
+    return filtered;
+  }, [pokemon, selectedTypes, searchTerm]);
 
   const refetch = async () => {
     try {

@@ -6,6 +6,8 @@ import { usePokemon } from '@/hooks/usePokemon';
 interface TypeFilterContextType {
   selectedTypes: string[];
   setSelectedTypes: (types: string[]) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
   pokemonCount: number;
   isLoading: boolean;
 }
@@ -18,16 +20,19 @@ interface TypeFilterProviderProps {
 
 export const TypeFilterProvider = ({ children }: TypeFilterProviderProps) => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const { pokemon, loading } = usePokemon(selectedTypes);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const { pokemon, loading } = usePokemon(selectedTypes, searchTerm);
 
   const value = useMemo(
     () => ({
       selectedTypes,
       setSelectedTypes,
+      searchTerm,
+      setSearchTerm,
       pokemonCount: loading ? 0 : pokemon.length,
       isLoading: loading,
     }),
-    [selectedTypes, pokemon, loading]
+    [selectedTypes, searchTerm, pokemon, loading]
   );
 
   return (
