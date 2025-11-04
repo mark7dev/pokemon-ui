@@ -7,7 +7,7 @@ import { useTypeFilter } from "@/contexts/TypeFilterContext";
 import { Button, Typography } from "@mui/material";
 
 export const Header = () => {
-    const { selectedTypes, setSelectedTypes, pokemonCount } = useTypeFilter();
+    const { selectedTypes, setSelectedTypes, pokemonCount, isLoading } = useTypeFilter();
 
     const handleReset = () => {
         setSelectedTypes([]);
@@ -39,7 +39,7 @@ export const Header = () => {
                         whiteSpace: 'nowrap'
                     }}
                 >
-                    Total: {pokemonCount}
+                    Total: {isLoading ? 'Counting...' : pokemonCount}
                 </Typography>
             </div>
             <div className="flex-1 flex justify-center">
