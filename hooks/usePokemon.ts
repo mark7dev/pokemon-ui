@@ -1,69 +1,47 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import api from '@/config/axios';
+import { pokemonApi } from '@/services/pokemonApi';
+import { queryKeys } from '@/constants/queryKeys';
+import { applyFiltersAndSort, type SortOrder } from '@/utils/pokemonFilters';
+import { getErrorMessage } from '@/utils/errorHandler';
 import type { Pokemon } from '@/types/pokemon';
 
-type SortOrder = 'asc' | 'desc' | null;
+interface UsePokemonParams {
+  selectedTypes?: string[];
+  searchTerm?: string;
+  sortOrder?: SortOrder;
+}
 
-export const usePokemon = (selectedTypes: string[] = [], searchTerm: string = '', sortOrder: SortOrder = null) => {
-  // Fetch all pokemon with TanStack Query
+export const usePokemon = ({
+  selectedTypes = [],
+  searchTerm = '',
+  sortOrder = null,
+}: UsePokemonParams = {}) => {
   const {
-    data: pokemon = [],
+    data: allPokemon = [],
     isLoading,
     error,
     refetch,
   } = useQuery<Pokemon[]>({
-    queryKey: ['pokemon'],
-    queryFn: async () => {
-      const response = await api.get('/pokemons');
-      return response.data;
-    },
+    queryKey: queryKeys.pokemon.all,
+    queryFn: pokemonApi.getAll,
   });
 
-  // Filter and sort pokemon based on selected types, search term, and sort order
-  const filteredPokemon = useMemo(() => {
-    let filtered = pokemon;
+  const filteredPokemon = useMemo(
+    () =>
+      applyFiltersAndSort(allPokemon, {
+        selectedTypes,
+        searchTerm,
+        sortOrder,
+      }),
+    [allPokemon, selectedTypes, searchTerm, sortOrder]
+  );
 
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const search = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(search)
-      );
-    }
-
-    // Filter by selected types
-    if (selectedTypes.length > 0) {
-      filtered = filtered.filter(p => 
-        selectedTypes.some(selectedType => 
-          p.types.some(pokemonType => 
-            pokemonType.toLowerCase() === selectedType.toLowerCase()
-          )
-        )
-      );
-    }
-
-    // Sort by name
-    if (sortOrder) {
-      filtered = [...filtered].sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (sortOrder === 'asc') {
-          return nameA.localeCompare(nameB);
-        } else {
-          return nameB.localeCompare(nameA);
-        }
-      });
-    }
-
-    return filtered;
-  }, [pokemon, selectedTypes, searchTerm, sortOrder]);
-
-  return { 
-    pokemon: filteredPokemon, 
-    allPokemon: pokemon,
-    loading: isLoading, 
-    error: error ? (error instanceof Error ? error.message : 'Failed to fetch Pokemon') : null, 
-    refetch 
+  return {
+    pokemon: filteredPokemon,
+    allPokemon,
+    loading: isLoading,
+    error: error ? getErrorMessage(error) : null,
+    refetch,
   };
 };

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { API_CONFIG, CORS_HEADERS } from '@/constants/api';
 
 export async function GET(
   request: NextRequest,
@@ -6,8 +7,21 @@ export async function GET(
 ) {
   try {
     const { name: pokemonName } = await params;
-    const backendUrl = 'http://localhost:4000';
-    const url = `${backendUrl}/api/pokemons/${pokemonName}`;
+    
+    if (!pokemonName || typeof pokemonName !== 'string') {
+      return NextResponse.json(
+        { 
+          error: 'Invalid Pokemon name',
+          details: 'Pokemon name is required'
+        },
+        { 
+          status: 400,
+          headers: CORS_HEADERS,
+        }
+      );
+    }
+
+    const url = `${API_CONFIG.BACKEND_URL}/api/pokemons/${pokemonName}`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -19,18 +33,37 @@ export async function GET(
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Proxy: Backend error: ${response.status} - ${errorText}`);
-      throw new Error(`Backend responded with status: ${response.status}`);
+      
+      if (response.status === 404) {
+        return NextResponse.json(
+          { 
+            error: 'Pokemon not found',
+            details: `Pokemon with name "${pokemonName}" not found`
+          },
+          { 
+            status: 404,
+            headers: CORS_HEADERS,
+          }
+        );
+      }
+      
+      return NextResponse.json(
+        { 
+          error: 'Failed to fetch pokemon from backend',
+          details: `Backend responded with status: ${response.status}`
+        },
+        { 
+          status: response.status,
+          headers: CORS_HEADERS,
+        }
+      );
     }
 
     const data = await response.json();
     
     return NextResponse.json(data, {
       status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: CORS_HEADERS,
     });
   } catch (error) {
     console.error('Proxy: Error occurred:', error);
@@ -40,7 +73,10 @@ export async function GET(
         error: 'Failed to fetch pokemon from backend',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: CORS_HEADERS,
+      }
     );
   }
 }
@@ -48,11 +84,7 @@ export async function GET(
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+    headers: CORS_HEADERS,
   });
 }
 
