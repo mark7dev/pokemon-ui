@@ -52,9 +52,7 @@ export const Header = () => {
                 boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
                 width: '100%',
                 px: { xs: 1, sm: 2, md: 4 },
-                py: { xs: 2, sm: 3, md: 4 },
-                pt: { xs: 3, sm: 4, md: 6 },
-                pb: { xs: 3, sm: 4, md: 6 }
+                py: { xs: 1, sm: 1.5, md: 2 }
             }}
         >
             {/* Mobile Layout: Stacked */}
@@ -62,7 +60,7 @@ export const Header = () => {
                 sx={{
                     display: { xs: 'flex', md: 'none' },
                     flexDirection: 'column',
-                    gap: 2
+                    gap: 1
                 }}
             >
                 {/* Mobile: Top row - Logo and Theme Toggle */}
@@ -71,6 +69,7 @@ export const Header = () => {
                         {!isHomePage && (
                             <IconButton
                                 onClick={handleBackClick}
+                                size="small"
                                 sx={{
                                     color: 'text.primary',
                                     '&:hover': {
@@ -79,7 +78,7 @@ export const Header = () => {
                                 }}
                                 aria-label="Go back"
                             >
-                                <IoArrowBack size={24} />
+                                <IoArrowBack size={20} />
                             </IconButton>
                         )}
                         <Box
@@ -95,11 +94,11 @@ export const Header = () => {
                             <Image
                                 src="/logo.png"
                                 alt="Pokemon Logo"
-                                width={200}
-                                height={150}
+                                width={120}
+                                height={90}
                                 priority
                                 className="h-auto"
-                                style={{ maxWidth: '200px', height: 'auto' }}
+                                style={{ maxWidth: '120px', height: 'auto' }}
                             />
                         </Box>
                     </Box>
@@ -223,11 +222,11 @@ export const Header = () => {
                             <Image
                                 src="/logo.png"
                                 alt="Pokemon Logo"
-                                width={320}
-                                height={240}
+                                width={180}
+                                height={135}
                                 priority
                                 className="h-auto"
-                                style={{ maxWidth: '320px', height: 'auto' }}
+                                style={{ maxWidth: '180px', height: 'auto' }}
                             />
                         </Box>
 
@@ -261,6 +260,7 @@ export const Header = () => {
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <IconButton
                                 onClick={handleBackClick}
+                                size="small"
                                 sx={{
                                     color: 'text.primary',
                                     '&:hover': {
@@ -269,7 +269,7 @@ export const Header = () => {
                                 }}
                                 aria-label="Go back"
                             >
-                                <IoArrowBack size={28} />
+                                <IoArrowBack size={22} />
                             </IconButton>
                         </Box>
                         <Box 
