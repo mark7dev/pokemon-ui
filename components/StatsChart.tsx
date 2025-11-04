@@ -52,27 +52,45 @@ export const StatsChart = ({ stats }: StatsChartProps) => {
         const label = STAT_LABELS[stat.name] || stat.name;
 
         return (
-          <Box key={stat.name} sx={{ mb: 3 }}>
-            <Typography variant="body1" fontWeight={600} sx={{ mb: 1 }}>
+          <Box key={stat.name} sx={{ mb: 1.5 }}>
+            <Typography 
+              variant="body2" 
+              fontWeight={600} 
+              sx={{ 
+                mb: 0.5,
+                fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' }
+              }}
+            >
               {label}
             </Typography>
-            <Box sx={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', gap: 0.75 }}>
               <Box
                 sx={{
-                  height: 24,
-                  width: `${normalizedValue}%`,
-                  backgroundColor: color,
-                  borderRadius: 2,
+                  flex: 1,
+                  maxWidth: '85%',
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
-              />
+              >
+                <Box
+                  sx={{
+                    height: { xs: 18, sm: 20 },
+                    width: `${normalizedValue}%`,
+                    maxWidth: '100%',
+                    backgroundColor: color,
+                    borderRadius: 1.5,
+                  }}
+                />
+              </Box>
               <Typography
                 variant="body2"
                 sx={{
                   color: 'text.primary',
                   fontWeight: 600,
-                  fontSize: '0.875rem',
-                  minWidth: 40,
+                  fontSize: { xs: '0.75rem', sm: '0.8125rem', md: '0.875rem' },
+                  minWidth: { xs: 30, sm: 35 },
                   textAlign: 'left',
+                  flexShrink: 0,
                 }}
               >
                 {stat.value}
