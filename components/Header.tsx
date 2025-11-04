@@ -4,17 +4,34 @@ import Image from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
 import { TypeFilter } from "./TypeFilter";
 import { useTypeFilter } from "@/contexts/TypeFilterContext";
+import { Button } from "@mui/material";
 
 export const Header = () => {
     const { selectedTypes, setSelectedTypes } = useTypeFilter();
 
+    const handleReset = () => {
+        setSelectedTypes([]);
+    };
+
     return (
         <header className="w-full p-4 flex justify-between items-center pt-6 pb-6">
-            <div className="flex-1 flex justify-start">
+            <div className="flex-1 flex justify-start items-center gap-2">
                 <TypeFilter 
                     selectedTypes={selectedTypes} 
                     onTypesChange={setSelectedTypes} 
                 />
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleReset}
+                    disabled={selectedTypes.length === 0}
+                    sx={{
+                        textTransform: 'none',
+                        minWidth: '100px'
+                    }}
+                >
+                    Remove All
+                </Button>
             </div>
             <div className="flex-1 flex justify-center">
                 <Image
