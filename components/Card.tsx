@@ -19,20 +19,101 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
   }
 
   return (
-    <Card sx={{ maxWidth: 345 }} onClick={handleClick}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="200"
-          image={pokemon.image}
-          alt={pokemon.name}
-          sx={{ objectFit: 'contain', backgroundColor: 'grey.100' }}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div" sx={{ textTransform: 'capitalize' }}>
+    <Card 
+      sx={{ 
+        width: '100%',
+        height: '100%',
+        minHeight: 360,
+        maxWidth: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 4,
+        },
+        cursor: 'pointer'
+      }} 
+      onClick={handleClick}
+    >
+      <CardActionArea 
+        sx={{ 
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch'
+        }}
+      >
+        {/* Image container with fixed aspect ratio */}
+        <Box
+          sx={{
+            width: '100%',
+            height: 200,
+            position: 'relative',
+            backgroundColor: 'grey.50',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden'
+          }}
+        >
+          <CardMedia
+            component="img"
+            image={pokemon.image}
+            alt={pokemon.name}
+            sx={{ 
+              maxWidth: '90%',
+              maxHeight: '90%',
+              objectFit: 'contain',
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.05)'
+              }
+            }}
+          />
+        </Box>
+
+        {/* Content with consistent height */}
+        <CardContent 
+          sx={{ 
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            p: 2,
+            '&:last-child': { pb: 2 }
+          }}
+        >
+          {/* Pokemon name */}
+          <Typography 
+            gutterBottom 
+            variant="h6" 
+            component="div" 
+            sx={{ 
+              textTransform: 'capitalize',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+              lineHeight: 1.3,
+              mb: 1.5,
+              minHeight: '1.5em',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
             {pokemon.name}
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+
+          {/* Types container */}
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 0.8,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-end'
+            }}
+          >
             {pokemon.types.map((type, index) => (
               <Chip
                 key={index}
@@ -42,7 +123,18 @@ export const PokemonCard = ({ pokemon }: PokemonCardProps) => {
                   textTransform: 'capitalize',
                   backgroundColor: getTypeColor(type),
                   color: 'white',
-                  fontWeight: 'bold'
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  height: 24,
+                  '& .MuiChip-label': {
+                    px: 1.5
+                  },
+                  boxShadow: 1,
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: 2
+                  }
                 }}
               />
             ))}
