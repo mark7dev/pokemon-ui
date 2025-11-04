@@ -68,8 +68,9 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
   return (
     <FormControl 
       sx={{ 
-        minWidth: 200, 
-        maxWidth: 300,
+        minWidth: { xs: '100%', sm: 180, md: 200 }, 
+        maxWidth: { xs: '100%', sm: 250, md: 300 },
+        width: { xs: '100%', md: 'auto' },
         position: 'relative'
       }} 
       size="small"

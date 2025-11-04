@@ -24,9 +24,11 @@ export const SearchBar = () => {
       value={searchTerm}
       onChange={handleChange}
       size="small"
+      fullWidth
       sx={{
-        minWidth: 200,
-        maxWidth: 300,
+        minWidth: { xs: '100%', md: 200 },
+        maxWidth: { xs: '100%', md: 300 },
+        width: { xs: '100%', md: 'auto' },
         '& .MuiOutlinedInput-root': {
           borderRadius: 2,
         }
