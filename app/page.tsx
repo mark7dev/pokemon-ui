@@ -1,9 +1,14 @@
+'use client';
+
 import { Grid } from '../components/Grid';
+import { useTypeFilter } from '@/contexts/TypeFilterContext';
 
 export default function Home() {
+  const { selectedTypes } = useTypeFilter();
+
   return (
     <div className="theme-bg theme-text theme-transition">
-      <Grid />
+      <Grid selectedTypes={selectedTypes} />
     </div>
   );
 }

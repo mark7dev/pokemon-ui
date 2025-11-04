@@ -5,8 +5,12 @@ import { usePokemon } from '@/hooks/usePokemon';
 import { Alert, Typography, Box } from '@mui/material';
 import { SimpleLoading } from './SimpleLoading';
 
-export const Grid = () => {
-    const { pokemon, loading, error } = usePokemon();
+interface GridProps {
+    selectedTypes: string[];
+}
+
+export const Grid = ({ selectedTypes }: GridProps) => {
+    const { pokemon, loading, error } = usePokemon(selectedTypes);
 
     if (error) {
         return (

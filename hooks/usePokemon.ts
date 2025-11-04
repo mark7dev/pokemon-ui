@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '@/config/axios';
 
 export interface Pokemon {
@@ -7,7 +7,7 @@ export interface Pokemon {
   image: string;
 }
 
-export const usePokemon = () => {
+export const usePokemon = (selectedTypes: string[] = []) => {
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +31,21 @@ export const usePokemon = () => {
     fetchPokemon();
   }, []);
 
+  // Filter pokemon based on selected types
+  const filteredPokemon = useMemo(() => {
+    if (selectedTypes.length === 0) {
+      return pokemon;
+    }
+    
+    return pokemon.filter(p => 
+      selectedTypes.some(selectedType => 
+        p.types.some(pokemonType => 
+          pokemonType.toLowerCase() === selectedType.toLowerCase()
+        )
+      )
+    );
+  }, [pokemon, selectedTypes]);
+
   const refetch = async () => {
     try {
       setLoading(true);
@@ -46,5 +61,11 @@ export const usePokemon = () => {
     }
   };
 
-  return { pokemon, loading, error, refetch };
+  return { 
+    pokemon: filteredPokemon, 
+    allPokemon: pokemon,
+    loading, 
+    error, 
+    refetch 
+  };
 };

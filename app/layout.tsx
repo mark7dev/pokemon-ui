@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { ThemeProvider } from "next-themes";
 import MuiThemeProvider from "@/components/MuiThemeProvider";
+import { TypeFilterProvider } from "@/contexts/TypeFilterContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,16 +17,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Pokemon UI",
-  description: "A user interface for displaying Pokemon information",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface RootLayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -39,8 +36,10 @@ export default function RootLayout({
           storageKey="pokemon-theme"
         >
           <MuiThemeProvider>
-            <Header />
-            {children}
+            <TypeFilterProvider>
+              <Header />
+              {children}
+            </TypeFilterProvider>
           </MuiThemeProvider>
         </ThemeProvider>
       </body>
