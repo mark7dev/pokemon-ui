@@ -1,12 +1,16 @@
 'use client';
 
-import React, { useId } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, InputAdornment, Box, IconButton } from '@mui/material';
 import { useTypeFilter } from '@/contexts/TypeFilterContext';
 
 export const SearchBar = () => {
   const { searchTerm, setSearchTerm } = useTypeFilter();
-  const searchId = useId();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -16,9 +20,29 @@ export const SearchBar = () => {
     setSearchTerm('');
   };
 
+  if (!mounted) {
+    return (
+      <TextField
+        variant="outlined"
+        placeholder="Search Pokemon..."
+        value=""
+        size="small"
+        fullWidth
+        disabled
+        sx={{
+          minWidth: { xs: '100%', md: 200 },
+          maxWidth: { xs: '100%', md: 300 },
+          width: { xs: '100%', md: 'auto' },
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 2,
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <TextField
-      id={searchId}
       variant="outlined"
       placeholder="Search Pokemon..."
       value={searchTerm}
