@@ -20,14 +20,20 @@ interface TypeFilterProps {
   onTypesChange: (types: string[]) => void;
 }
 
+// Export handleChange logic for testing line 30
+export const handleChangeLogic = (value: string | string[], onTypesChange: (types: string[]) => void) => {
+  // Line 30: Handle both string and array values
+  onTypesChange(typeof value === 'string' ? value.split(',') : value);
+};
+
 export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) => {
   const [open, setOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedTypes>) => {
     const value = event.target.value;
-    // Line 29: Handle both string and array values
-    onTypesChange(typeof value === 'string' ? value.split(',') : value);
+    // Line 30: Handle both string and array values
+    handleChangeLogic(value, onTypesChange);
   };
 
   const handleChipClick = (typeToDelete: string) => (event: React.MouseEvent) => {

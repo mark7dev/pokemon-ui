@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TypeFilter } from '../TypeFilter';
+import { TypeFilter, handleChangeLogic } from '../TypeFilter';
 import { SelectChangeEvent } from '@mui/material';
 
 describe('TypeFilter', () => {
@@ -458,6 +458,15 @@ describe('TypeFilter', () => {
       
       expect(select).toBeInTheDocument();
     }
+  });
+
+  it('should call handleChangeLogic with string value to cover line 26', () => {
+    // Test handleChangeLogic directly to cover line 26 in TypeFilter.tsx
+    const mockCallback = jest.fn();
+    handleChangeLogic('fire,water,grass', mockCallback);
+    
+    // Verify it was called with split array (line 26 executed)
+    expect(mockCallback).toHaveBeenCalledWith(['fire', 'water', 'grass']);
   });
 });
 
