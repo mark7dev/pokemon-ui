@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { API_CONFIG, CORS_HEADERS } from '@/constants/api';
 
 export async function GET() {

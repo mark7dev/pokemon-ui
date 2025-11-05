@@ -3,7 +3,6 @@
  */
 
 import { GET, OPTIONS } from '../route';
-import { NextRequest } from 'next/server';
 
 // Mock fetch
 global.fetch = jest.fn();

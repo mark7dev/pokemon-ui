@@ -19,11 +19,13 @@ jest.mock('@/services/pokemonApi');
 const mockedPokemonApi = pokemonApi as jest.Mocked<typeof pokemonApi>;
 
 const createWrapper = () => {
-  return ({ children }: { children: React.ReactNode }) => (
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       {children}
     </ThemeProvider>
   );
+  Wrapper.displayName = 'TestWrapper';
+  return Wrapper;
 };
 
 describe('RootLayout', () => {

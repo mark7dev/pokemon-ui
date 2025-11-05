@@ -9,6 +9,7 @@ export const SearchBar = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+     
     setMounted(true);
   }, []);
 
