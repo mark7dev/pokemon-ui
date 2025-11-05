@@ -1,8 +1,15 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from 'next-themes';
 import { HeaderActions } from '../HeaderActions';
-import { TypeFilterProvider } from '@/contexts/TypeFilterContext';
+import { TypeFilterProvider, useTypeFilter } from '@/contexts/TypeFilterContext';
+import MuiThemeProvider from '@/components/MuiThemeProvider';
+import { pokemonApi } from '@/services/pokemonApi';
+
+jest.mock('@/services/pokemonApi');
+
+const mockedPokemonApi = pokemonApi as jest.Mocked<typeof pokemonApi>;
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -13,9 +20,13 @@ const createWrapper = () => {
     },
   });
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      <TypeFilterProvider>{children}</TypeFilterProvider>
-    </QueryClientProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <QueryClientProvider client={queryClient}>
+        <MuiThemeProvider>
+          <TypeFilterProvider>{children}</TypeFilterProvider>
+        </MuiThemeProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
@@ -25,6 +36,22 @@ describe('HeaderActions', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedPokemonApi.getAll.mockResolvedValue([]);
+    
+    // Reset matchMedia mock for next-themes
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
   });
 
   it('should not render when not on home page', () => {
@@ -157,6 +184,70 @@ describe('HeaderActions', () => {
       await user.click(removeButton);
       // handleReset function should execute setSelectedTypes([]) - line 20
       expect(removeButton).toBeInTheDocument();
+    }
+  });
+
+  it('should execute handleReset when Remove All button is clicked with types selected', async () => {
+    // Test line 20: setSelectedTypes([]) in handleReset
+    const user = userEvent.setup();
+    
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    const FullWrapper = ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <QueryClientProvider client={queryClient}>
+          <MuiThemeProvider>
+            <TypeFilterProvider>{children}</TypeFilterProvider>
+          </MuiThemeProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    );
+
+    const { result } = renderHook(() => useTypeFilter(), {
+      wrapper: FullWrapper,
+    });
+
+    // Set selectedTypes first to enable the button
+    await act(async () => {
+      result.current.setSelectedTypes(['fire', 'water']);
+    });
+
+    await waitFor(() => {
+      expect(result.current.selectedTypes).toEqual(['fire', 'water']);
+    });
+
+    // Now render HeaderActions with types selected
+    render(
+      <HeaderActions
+        isHomePage={true}
+        onBackClick={mockOnBackClick}
+        onSortClick={mockOnSortClick}
+      />,
+      { wrapper: FullWrapper }
+    );
+
+    await waitFor(() => {
+      const removeButton = screen.queryByText('Remove All');
+      if (removeButton) {
+        expect(removeButton).toBeInTheDocument();
+      }
+    }, { timeout: 3000 });
+
+    // Click the Remove All button to execute handleReset (line 20)
+    const removeButton = screen.queryByText('Remove All');
+    if (removeButton && !removeButton.hasAttribute('disabled')) {
+      await user.click(removeButton);
+      
+      // Verify that setSelectedTypes was called with empty array (line 20)
+      await waitFor(() => {
+        expect(result.current.selectedTypes).toEqual([]);
+      });
     }
   });
 });

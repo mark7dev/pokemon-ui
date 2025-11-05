@@ -62,31 +62,33 @@ jest.mock('next/image', () => ({
   },
 }));
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => {
-    const mediaQuery = {
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: jest.fn(), // deprecated
-      removeListener: jest.fn(), // deprecated
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
-    };
-    
-    // Track this media query for cleanup
-    openHandles.add(() => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', mediaQuery.onchange);
-      }
-    });
-    
-    return mediaQuery;
-  }),
-});
+// Mock window.matchMedia (only if window exists - for jsdom environment)
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation((query) => {
+      const mediaQuery = {
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      };
+      
+      // Track this media query for cleanup
+      openHandles.add(() => {
+        if (mediaQuery.removeEventListener) {
+          mediaQuery.removeEventListener('change', mediaQuery.onchange);
+        }
+      });
+      
+      return mediaQuery;
+    }),
+  });
+}
 
 // Mock XMLHttpRequest to prevent hanging requests
 const originalXMLHttpRequest = global.XMLHttpRequest;

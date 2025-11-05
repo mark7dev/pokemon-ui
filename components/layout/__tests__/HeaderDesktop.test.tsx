@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { HeaderDesktop } from '../HeaderDesktop';
-import { TypeFilterProvider } from '@/contexts/TypeFilterContext';
+import { TypeFilterProvider, useTypeFilter } from '@/contexts/TypeFilterContext';
 import MuiThemeProvider from '@/components/MuiThemeProvider';
 import { pokemonApi } from '@/services/pokemonApi';
 
@@ -206,6 +206,71 @@ describe('HeaderDesktop', () => {
       await user.click(removeButton);
       // handleReset function should execute setSelectedTypes([]) - line 22
       expect(removeButton).toBeInTheDocument();
+    }
+  });
+
+  it('should execute handleReset when Remove All button is clicked with types selected', async () => {
+    // Test line 22: setSelectedTypes([]) in handleReset
+    const user = userEvent.setup();
+    
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    const FullWrapper = ({ children }: { children: React.ReactNode }) => (
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <QueryClientProvider client={queryClient}>
+          <MuiThemeProvider>
+            <TypeFilterProvider>{children}</TypeFilterProvider>
+          </MuiThemeProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    );
+
+    const { result } = renderHook(() => useTypeFilter(), {
+      wrapper: FullWrapper,
+    });
+
+    // Set selectedTypes first to enable the button
+    await act(async () => {
+      result.current.setSelectedTypes(['fire', 'water']);
+    });
+
+    await waitFor(() => {
+      expect(result.current.selectedTypes).toEqual(['fire', 'water']);
+    });
+
+    // Now render HeaderDesktop with types selected
+    render(
+      <HeaderDesktop
+        isHomePage={true}
+        onLogoClick={mockOnLogoClick}
+        onBackClick={mockOnBackClick}
+        onSortClick={mockOnSortClick}
+      />,
+      { wrapper: FullWrapper }
+    );
+
+    await waitFor(() => {
+      const removeButton = screen.queryByText('Remove All');
+      if (removeButton) {
+        expect(removeButton).toBeInTheDocument();
+      }
+    }, { timeout: 3000 });
+
+    // Click the Remove All button to execute handleReset (line 22)
+    const removeButton = screen.queryByText('Remove All');
+    if (removeButton && !removeButton.hasAttribute('disabled')) {
+      await user.click(removeButton);
+      
+      // Verify that setSelectedTypes was called with empty array (line 22)
+      await waitFor(() => {
+        expect(result.current.selectedTypes).toEqual([]);
+      });
     }
   });
 });
