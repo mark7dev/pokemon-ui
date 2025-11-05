@@ -7,7 +7,8 @@ interface StatsChartProps {
   stats: PokemonStats;
 }
 
-const STAT_COLORS: Record<string, string> = {
+// Export STAT_COLORS for testing purposes
+export const STAT_COLORS: Record<string, string> = {
   'hp': '#4caf50',
   'attack': '#f44336',
   'defense': '#2196f3',
@@ -16,7 +17,8 @@ const STAT_COLORS: Record<string, string> = {
   'speed': '#00bcd4',
 };
 
-const STAT_LABELS: Record<string, string> = {
+// Export STAT_LABELS for testing purposes
+export const STAT_LABELS: Record<string, string> = {
   'hp': 'HP',
   'attack': 'Attack',
   'defense': 'Defense',
@@ -48,7 +50,9 @@ export const StatsChart = ({ stats }: StatsChartProps) => {
     <Box sx={{ width: '100%' }}>
       {statsArray.map((stat) => {
         const normalizedValue = Math.min((stat.value / maxStat) * 100, 100);
+        // Line 51: Fallback color when stat name is not in STAT_COLORS
         const color = STAT_COLORS[stat.name] || '#757575';
+        // Line 52: Fallback label when stat name is not in STAT_LABELS
         const label = STAT_LABELS[stat.name] || stat.name;
 
         return (

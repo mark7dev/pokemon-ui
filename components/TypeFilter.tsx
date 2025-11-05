@@ -26,6 +26,7 @@ export const TypeFilter = ({ selectedTypes, onTypesChange }: TypeFilterProps) =>
 
   const handleChange = (event: SelectChangeEvent<typeof selectedTypes>) => {
     const value = event.target.value;
+    // Line 29: Handle both string and array values
     onTypesChange(typeof value === 'string' ? value.split(',') : value);
   };
 
