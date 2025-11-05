@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest --watchAll=false --detectOpenHandles --forceExit",
+    "test:coverage": "jest --watchAll=false --detectOpenHandles --forceExit --coverage"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
